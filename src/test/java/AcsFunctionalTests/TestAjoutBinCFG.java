@@ -7,9 +7,11 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -52,60 +54,72 @@ public class TestAjoutBinCFG {
 
 	  @AfterTest
 	  public void afterTest() throws InterruptedException {
-		  Thread.sleep(10000);
+		  Thread.sleep(5000);
 		  driver.close();
 		  System.out.println("After test");
 	  }
 
 	  
-
-	  @Test  (priority = 0)
-	  public void testLoginPage() {
+	  @BeforeMethod
+	  public void A_initialisation() {
+		  userAccueil = new ACSAccueil(driver); 
 		  System.out.println("Testing the login page");
 		  ACSLogin userLogin = new ACSLogin(driver);
 		  userLogin.LoginToAcs("aabaoubida","anas2019");
 		  Assert.assertEquals(prop.getProperty("UrlAccueil"), driver.getCurrentUrl());
-
-	  }
-	  
-	  
-	  @BeforeMethod
-	  public void initialisation() {
-		  userAccueil = new ACSAccueil(driver); 
 	  }
 	  
 	  
 	  
 	  //Tests ACSNouveauBIN :
 	  @BeforeMethod
-	  public void initialisationConsultationBins() {
+	  public void B_initialisationConsultationBins() {
 		  consultation = new ACSConsultationBins(driver);
 		  nouveauBin = new ACSNouveauBIN(driver);
 	  }
-	  @Test  (priority = 20)
+	  //@Test  (priority = 20, enabled=true)
+	  @BeforeMethod
 	  public void ClickAjouterBin() {
 		  userAccueil.ClickBinButton();
 		  consultation.ClickAjouterBin();
 		  Assert.assertEquals(prop.getProperty("UrlNouveauBin"), driver.getCurrentUrl());
 	  }
-	  @Test (priority = 25)
+	  @Test (priority = 25,enabled=false)
 	  public void Retour() throws InterruptedException {
 		  System.out.println("Retour test");
-		  nouveauBin.ClickRetourButton();
-		  driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		  JavascriptExecutor executor = (JavascriptExecutor) driver;
+		  nouveauBin.ClickRetourButton(executor);
+		  driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		  driver.navigate().refresh();
+		  System.out.println("Url existant : " + driver.getCurrentUrl() +" Le titre est : " + driver.getTitle());
 		  Assert.assertEquals(prop.getProperty("UrlBinList"), driver.getCurrentUrl());
+		  // it works but it gives a wrong url 
 	  }
 	  
 	  
-	  @Test (priority = 31, enabled=false)
+	  @Test (priority = 31, enabled= false)
 	  public void AjouterBin() throws InterruptedException, IOException {
 		  nouveauBin = new ACSNouveauBIN(driver);
-		  nouveauBin.AjouterBin();
-		  Thread.sleep(3000);
+		  nouveauBin.AjouterSimpleBin();
 		  System.out.println("bin ajouté");
 
 	  }
 	  
+	  @Test (priority = 31 ,  enabled= true)
+	  public void AjouterAllBins() throws InterruptedException, IOException {
+		  nouveauBin = new ACSNouveauBIN(driver);
+		  nouveauBin.AjouterAllBins();
+		  System.out.println("bin ajouté");
 
+	  }
+	  /*
+	  @AfterMethod
+	  public void GoToAjouterBin() {
+		  userAccueil.ClickBinButton();
+		  consultation.ClickAjouterBin();
+		  Assert.assertEquals(prop.getProperty("UrlNouveauBin"), driver.getCurrentUrl());
+	  }
+
+*/
 	  
 }

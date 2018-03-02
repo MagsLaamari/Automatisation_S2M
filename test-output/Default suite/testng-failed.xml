@@ -6,12 +6,11 @@
       <class name="AcsFunctionalTests.TestAjoutBinCFG">
         <methods>
           <include name="afterTest"/>
-          <include name="initialisationConsultationBins"/>
+          <include name="B_initialisationConsultationBins"/>
           <include name="ClickAjouterBin"/>
-          <include name="Retour"/>
+          <include name="A_initialisation"/>
           <include name="beforeTest"/>
-          <include name="testLoginPage"/>
-          <include name="initialisation"/>
+          <include name="AjouterAllBins"/>
         </methods>
       </class> <!-- AcsFunctionalTests.TestAjoutBinCFG -->
     </classes>
